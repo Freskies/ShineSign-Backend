@@ -1,5 +1,6 @@
 package org.shinesignbackend.exceptions;
 
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,16 @@ public class ExceptionHandlerClass {
 			"You are not authorized to perform this action",
 			ex.getMessage(),
 			"403"
+		);
+		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler (value = MalformedJwtException.class)
+	protected ResponseEntity<Error> jwtException (@NotNull Exception ex) {
+		Error error = new Error(
+			"JWT error",
+			ex.getMessage(),
+			"401"
 		);
 		return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 	}

@@ -6,12 +6,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -58,14 +60,6 @@ public class JwtTokenUtil {
 			.setExpiration(new Date(System.currentTimeMillis() + this.expiration))
 			.signWith(SignatureAlgorithm.HS256, secret)
 			.compact();
-	}
-
-	public String getUserIdFromToken (String token) {
-		return this.getClaimFromToken(token, claims -> claims.get("userId", String.class));
-	}
-
-	public List<String> getRolesFromToken (String token) {
-		return this.getClaimFromToken(token, claims -> claims.get("roles", List.class));
 	}
 
 	public boolean validateToken (String jwtToken, @NotNull UserDetails userDetails) {

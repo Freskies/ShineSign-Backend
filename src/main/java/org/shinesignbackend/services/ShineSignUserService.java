@@ -10,6 +10,7 @@ import org.shinesignbackend.components.JwtTokenUtil;
 import org.shinesignbackend.repositories.ShineSignUserRepository;
 import org.shinesignbackend.requests.LoginRequest;
 import org.shinesignbackend.requests.RegisterRequest;
+import org.shinesignbackend.requests.UpdateUserRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,12 +28,19 @@ public class ShineSignUserService {
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenUtil jwtTokenUtil;
+	private final CustomUserDetailsService customUserDetailsService;
 
 	private @NotNull ShineSignUser shineSignUserFromRegisterRequest (@Valid RegisterRequest registerRequest) {
 		ShineSignUser shineSignUser = new ShineSignUser();
 		BeanUtils.copyProperties(registerRequest, shineSignUser);
 		shineSignUser.setPassword(passwordEncoder.encode(registerRequest.password()));
 		return shineSignUser;
+	}
+
+	public ShineSignUser getUserByUsername (String username) {
+		return this.shineSignUserRepository.findByUsername(username).orElseThrow(
+			() -> new EntityExistsException(username)
+		);
 	}
 
 	public void register (@Valid @NotNull RegisterRequest registerRequest) {
@@ -49,5 +57,12 @@ public class ShineSignUserService {
 		);
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		return jwtTokenUtil.generateToken(userDetails);
+	}
+
+	public void update (@NotNull String token, @Valid UpdateUserRequest updateUserRequest) {
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		ShineSignUser shineSignUser = this.getUserByUsername(username);
+		BeanUtils.copyProperties(updateUserRequest, shineSignUser);
+		this.shineSignUserRepository.save(shineSignUser);
 	}
 }
