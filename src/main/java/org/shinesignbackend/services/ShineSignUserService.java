@@ -1,5 +1,6 @@
 package org.shinesignbackend.services;
 
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,6 @@ public class ShineSignUserService {
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenUtil jwtTokenUtil;
-	private final CustomUserDetailsService customUserDetailsService;
 
 	private @NotNull ShineSignUser shineSignUserFromRegisterRequest (@Valid RegisterRequest registerRequest) {
 		ShineSignUser shineSignUser = new ShineSignUser();
@@ -37,10 +37,15 @@ public class ShineSignUserService {
 		return shineSignUser;
 	}
 
-	public ShineSignUser getUserByUsername (String username) {
+	private ShineSignUser getUserByUsername (String username) {
 		return this.shineSignUserRepository.findByUsername(username).orElseThrow(
 			() -> new EntityExistsException(username)
 		);
+	}
+
+	public ShineSignUser getUserFromToken (@NotNull String token) {
+		String username = jwtTokenUtil.getUsernameFromToken(token.substring(7));
+		return this.getUserByUsername(username);
 	}
 
 	public void register (@Valid @NotNull RegisterRequest registerRequest) {
@@ -60,8 +65,7 @@ public class ShineSignUserService {
 	}
 
 	public void update (@NotNull String token, @Valid UpdateUserRequest updateUserRequest) {
-		String username = jwtTokenUtil.getUsernameFromToken(token);
-		ShineSignUser shineSignUser = this.getUserByUsername(username);
+		ShineSignUser shineSignUser = this.getUserFromToken(token);
 		BeanUtils.copyProperties(updateUserRequest, shineSignUser);
 		this.shineSignUserRepository.save(shineSignUser);
 	}

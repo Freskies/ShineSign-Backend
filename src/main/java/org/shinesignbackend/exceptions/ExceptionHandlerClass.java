@@ -42,7 +42,7 @@ public class ExceptionHandlerClass {
 	}
 
 	@ExceptionHandler (value = MalformedJwtException.class)
-	protected ResponseEntity<Error> jwtException (@NotNull Exception ex) {
+	protected ResponseEntity<Error> jwtException (@NotNull MalformedJwtException ex) {
 		Error error = new Error(
 			"JWT error",
 			ex.getMessage(),

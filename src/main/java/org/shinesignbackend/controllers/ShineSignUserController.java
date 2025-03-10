@@ -2,7 +2,6 @@ package org.shinesignbackend.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.shinesignbackend.components.JwtTokenUtil;
 import org.shinesignbackend.requests.LoginRequest;
 import org.shinesignbackend.requests.RegisterRequest;
 import org.shinesignbackend.requests.UpdateUserRequest;
@@ -11,11 +10,8 @@ import org.shinesignbackend.services.ShineSignUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping ("/api/user")
@@ -23,7 +19,6 @@ import java.util.UUID;
 @Validated
 public class ShineSignUserController {
 	private final ShineSignUserService shineSignUserService;
-	private final JwtTokenUtil jwtTokenUtil;
 
 	@PostMapping ("/register")
 	@ResponseStatus (HttpStatus.CREATED)
@@ -46,8 +41,7 @@ public class ShineSignUserController {
 		@RequestHeader("Authorization") String token,
 		@RequestBody @Valid UpdateUserRequest updateUserRequest
 	) {
-		// remove "Bearer " from the token
-		this.shineSignUserService.update(token.substring(7), updateUserRequest);
+		this.shineSignUserService.update(token, updateUserRequest);
 		return ResponseEntity.ok("User updated successfully");
 	}
 }
