@@ -23,8 +23,10 @@ public class Page {
 
 	private int pageNumber;
 
+	@Column (length = 65535)
 	private String style;
 
+	@Column (length = 65535)
 	private String body;
 
 //	@ManyToOne

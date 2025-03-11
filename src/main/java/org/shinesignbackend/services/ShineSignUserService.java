@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.shinesignbackend.configs.Role;
 import org.shinesignbackend.entities.ShineSignUser;
 import org.shinesignbackend.components.JwtTokenUtil;
+import org.shinesignbackend.factories.ShineSignUserFactory;
 import org.shinesignbackend.repositories.ShineSignUserRepository;
 import org.shinesignbackend.requests.LoginRequest;
 import org.shinesignbackend.requests.RegisterRequest;
@@ -30,13 +31,6 @@ public class ShineSignUserService {
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenUtil jwtTokenUtil;
 
-	private @NotNull ShineSignUser shineSignUserFromRegisterRequest (@Valid RegisterRequest registerRequest) {
-		ShineSignUser shineSignUser = new ShineSignUser();
-		BeanUtils.copyProperties(registerRequest, shineSignUser);
-		shineSignUser.setPassword(passwordEncoder.encode(registerRequest.password()));
-		return shineSignUser;
-	}
-
 	private ShineSignUser getUserByUsername (String username) {
 		return this.shineSignUserRepository.findByUsername(username).orElseThrow(
 			() -> new EntityExistsException(username)
@@ -51,7 +45,7 @@ public class ShineSignUserService {
 	public void register (@Valid @NotNull RegisterRequest registerRequest) {
 		if (this.shineSignUserRepository.existsByUsername(registerRequest.username()))
 			throw new EntityExistsException(registerRequest.username());
-		ShineSignUser shineSignUser = this.shineSignUserFromRegisterRequest(registerRequest);
+		ShineSignUser shineSignUser = ShineSignUserFactory.fromRegisterRequest(registerRequest, this.passwordEncoder);
 		shineSignUser.setRoles(List.of(Role.ROLE_USER));
 		this.shineSignUserRepository.save(shineSignUser);
 	}

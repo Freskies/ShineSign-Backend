@@ -27,9 +27,6 @@ public class Document {
 	@OneToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Page> pages;
 
-	@ElementCollection (fetch = FetchType.EAGER)
-	private List<String> pdfUrls;
-
 	@ManyToOne
 	private ShineSignUser owner;
 }

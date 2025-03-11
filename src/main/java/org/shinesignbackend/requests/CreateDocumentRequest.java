@@ -1,8 +1,8 @@
 package org.shinesignbackend.requests;
 
-import org.jetbrains.annotations.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record CreateDocumentRequest(
-	@NotNull String title
+	@NotBlank String title
 ) {
 }
