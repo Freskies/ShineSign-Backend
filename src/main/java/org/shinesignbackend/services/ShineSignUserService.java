@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class ShineSignUserService {
 	}
 
 	public ShineSignUser getUserFromToken (@NotNull String token) {
-		String username = jwtTokenUtil.getUsernameFromToken(token.substring(7));
+		String username = this.jwtTokenUtil.getUsernameFromToken(token.substring(7));
 		return this.getUserByUsername(username);
 	}
 
@@ -55,12 +56,21 @@ public class ShineSignUserService {
 			new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password())
 		);
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		return jwtTokenUtil.generateToken(userDetails);
+		return this.jwtTokenUtil.generateToken(userDetails);
 	}
 
 	public void update (@NotNull String token, @Valid UpdateUserRequest updateUserRequest) {
 		ShineSignUser shineSignUser = this.getUserFromToken(token);
 		BeanUtils.copyProperties(updateUserRequest, shineSignUser);
 		this.shineSignUserRepository.save(shineSignUser);
+	}
+
+	public boolean isValidToken (@NotNull String username, @NotNull String token) {
+		try {
+			String tokenUsername = this.getUserFromToken(token).getUsername();
+			return username.equals(tokenUsername);
+		} catch (MalformedJwtException | UsernameNotFoundException e) {
+			return false;
+		}
 	}
 }

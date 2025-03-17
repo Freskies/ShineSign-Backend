@@ -34,6 +34,15 @@ public class ShineSignUserController {
 		return ResponseEntity.ok().body(new LoginResponse(token));
 	}
 
+	@GetMapping ("/{username}/isValidToken")
+	@ResponseStatus (HttpStatus.OK)
+	public ResponseEntity<Boolean> isValidToken (
+		@PathVariable String username,
+		@RequestHeader("Authorization") String token
+	) {
+		return ResponseEntity.ok(this.shineSignUserService.isValidToken(username, token));
+	}
+
 	@PutMapping ("/update")
 	@ResponseStatus (HttpStatus.OK)
 	@PreAuthorize ("hasRole('ROLE_USER')")
