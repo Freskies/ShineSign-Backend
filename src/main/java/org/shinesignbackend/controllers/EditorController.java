@@ -29,7 +29,7 @@ public class EditorController {
 		return this.documentService.createDocument(token, createDocumentRequest);
 	}
 
-	@RequestMapping ("/{documentId}")
+	@GetMapping ("/{documentId}")
 	public DocumentResponse getDocument (
 		@RequestHeader ("Authorization") String token,
 		@PathVariable UUID documentId

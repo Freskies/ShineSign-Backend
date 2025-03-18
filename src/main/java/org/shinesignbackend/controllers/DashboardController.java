@@ -1,10 +1,12 @@
 package org.shinesignbackend.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.shinesignbackend.responses.AllDocumentsResponse;
 import org.shinesignbackend.services.DocumentService;
-import org.shinesignbackend.services.ShineSignUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize ("hasRole('ROLE_USER')")
 public class DashboardController {
 	private final DocumentService documentService;
-	private final ShineSignUserService shineSignUserService;
 
-
+	@GetMapping("/documents")
+	public AllDocumentsResponse getAllDocuments (
+		@RequestHeader ("Authorization") String token
+	) {
+		return this.documentService.getAllDocuments(token);
+	}
 }

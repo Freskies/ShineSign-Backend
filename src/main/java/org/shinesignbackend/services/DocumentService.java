@@ -8,6 +8,7 @@ import org.shinesignbackend.factories.PageFactory;
 import org.shinesignbackend.repositories.DocumentRepository;
 import org.shinesignbackend.requests.CreateDocumentRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
+import org.shinesignbackend.responses.AllDocumentsResponse;
 import org.shinesignbackend.responses.DocumentResponse;
 import org.springframework.stereotype.Service;
 
@@ -60,5 +61,11 @@ public class DocumentService {
 			document.setPages(updateDocumentRequest.pages());
 		this.documentRepository.save(document);
 		return DocumentResponse.fromDocument(document);
+	}
+
+	public AllDocumentsResponse getAllDocuments (String token) {
+		return new AllDocumentsResponse(
+			this.documentRepository.findAllByOwner(this.shineSignUserService.getUserFromToken(token))
+		);
 	}
 }
