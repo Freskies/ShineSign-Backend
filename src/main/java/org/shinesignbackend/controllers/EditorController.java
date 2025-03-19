@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.shinesignbackend.requests.CreateDocumentRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
 import org.shinesignbackend.responses.DocumentResponse;
+import org.shinesignbackend.responses.PageResponse;
 import org.shinesignbackend.services.DocumentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +28,14 @@ public class EditorController {
 		@RequestBody @Valid @NotNull CreateDocumentRequest createDocumentRequest
 	) {
 		return this.documentService.createDocument(token, createDocumentRequest);
+	}
+
+	@PostMapping ("/{documentId}/newPage")
+	public PageResponse createPage (
+		@RequestHeader ("Authorization") String token,
+		@PathVariable UUID documentId
+	) {
+		return this.documentService.createPage(token, documentId);
 	}
 
 	@GetMapping ("/{documentId}")

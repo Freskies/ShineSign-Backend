@@ -4,12 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.shinesignbackend.entities.Document;
+import org.shinesignbackend.entities.Page;
 import org.shinesignbackend.factories.PageFactory;
 import org.shinesignbackend.repositories.DocumentRepository;
 import org.shinesignbackend.requests.CreateDocumentRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
 import org.shinesignbackend.responses.AllDocumentsResponse;
 import org.shinesignbackend.responses.DocumentResponse;
+import org.shinesignbackend.responses.PageResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,15 @@ public class DocumentService {
 		Document document = this.getDocumentFromId(documentId);
 		if (!document.getOwner().getId().equals(this.shineSignUserService.getUserFromToken(token).getId()))
 			throw new IllegalArgumentException("Document not found");
+	}
+
+	public PageResponse createPage (String token, UUID documentId) {
+		Document document = this.getDocumentFromId(documentId);
+		this.checkDocumentOwner(token, documentId);
+		Page page = PageFactory.createPage();
+		document.getPages().add(page);
+		this.documentRepository.save(document);
+		return PageResponse.fromPage(page);
 	}
 
 	public DocumentResponse createDocument (String token, @NotNull CreateDocumentRequest createDocumentRequest) {

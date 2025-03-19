@@ -5,15 +5,17 @@ import org.jetbrains.annotations.NotNull;
 import org.shinesignbackend.entities.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public record PageResponse(
-	int pageNumber,
+	boolean isFirst,
 	String style,
-	String body
+	String body,
+	UUID nextPage
 ) {
 	@Contract ("_ -> new")
 	public static @NotNull PageResponse fromPage (@NotNull Page page) {
-		return new PageResponse(page.getPageNumber(), page.getStyle(), page.getBody());
+		return new PageResponse(page.getIsFirst(), page.getStyle(), page.getBody(), page.getNextPage());
 	}
 
 	public static List<PageResponse> fromPages (@NotNull List<Page> pages) {

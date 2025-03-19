@@ -21,7 +21,9 @@ public class Page {
 	@JdbcTypeCode (SqlTypes.UUID)
 	private UUID id;
 
-	private int pageNumber;
+	private Boolean isFirst;
+
+	private UUID nextPage;
 
 	@Column (length = 65535)
 	private String style;

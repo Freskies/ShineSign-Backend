@@ -1,25 +1,24 @@
 package org.shinesignbackend.factories;
 
 import org.jetbrains.annotations.NotNull;
-import org.shinesignbackend.entities.Document;
 import org.shinesignbackend.entities.Page;
 
 public class PageFactory {
-	public static @NotNull Page createPage(int pageNumber) {
-		Page page = new Page();
-		page.setPageNumber(pageNumber);
-		page.setStyle("");
-		page.setBody("");
-		return page;
-	}
-
 	public static @NotNull Page createFirstPage() {
-		Page page = PageFactory.createPage(1);
+		Page page = new Page();
+		page.setIsFirst(true);
 		page.setBody("<!-- Start editing here -->");
+		page.setStyle("/* Write your style rules here */");
+		page.setNextPage(null);
 		return page;
 	}
 
-	public static @NotNull Page createNextPage(@NotNull Document document) {
-		return PageFactory.createPage(document.getPages().size() + 1);
+	public static @NotNull Page createPage() {
+		Page page = new Page();
+		page.setIsFirst(false);
+		page.setBody("<!-- Start editing here -->");
+		page.setStyle("/* Write your style rules here */");
+		page.setNextPage(null);
+		return page;
 	}
 }
