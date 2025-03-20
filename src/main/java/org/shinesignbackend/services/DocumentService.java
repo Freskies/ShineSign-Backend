@@ -40,8 +40,8 @@ public class DocumentService {
 		this.checkDocumentOwner(token, documentId);
 		Page page = PageFactory.createPage();
 		document.getPages().add(page);
-		this.documentRepository.save(document);
-		return PageResponse.fromPage(page);
+		Document newDocument = this.documentRepository.save(document);
+		return PageResponse.fromPage(newDocument.getPages().get(document.getPages().size() - 1));
 	}
 
 	public DocumentResponse createDocument (String token, @NotNull CreateDocumentRequest createDocumentRequest) {
