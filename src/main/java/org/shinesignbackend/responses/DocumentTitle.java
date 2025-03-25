@@ -8,13 +8,15 @@ import java.util.UUID;
 
 public record DocumentTitle(
 	UUID id,
-	String title
+	String title,
+	Boolean isPublic
 ) {
 	@Contract ("_ -> new")
 	public static @NotNull DocumentTitle fromDocument (@NotNull Document document) {
 		return new DocumentTitle(
 			document.getId(),
-			document.getTitle()
+			document.getTitle(),
+			document.getIsPublic()
 		);
 	}
 }

@@ -24,6 +24,8 @@ public class Document {
 
 	private String title;
 
+	private Boolean isPublic;
+
 	@OneToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Page> pages;
 

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.shinesignbackend.entities.Document;
 import org.shinesignbackend.entities.Page;
+import org.shinesignbackend.factories.DocumentFactory;
 import org.shinesignbackend.factories.PageFactory;
 import org.shinesignbackend.repositories.DocumentRepository;
 import org.shinesignbackend.requests.CreateDocumentRequest;
@@ -45,10 +46,10 @@ public class DocumentService {
 	}
 
 	public DocumentResponse createDocument (String token, @NotNull CreateDocumentRequest createDocumentRequest) {
-		Document document = new Document();
-		document.setTitle(createDocumentRequest.title());
-		document.setOwner(this.shineSignUserService.getUserFromToken(token));
-		document.setPages(List.of(PageFactory.createFirstPage()));
+		Document document = DocumentFactory.createDocument(
+			createDocumentRequest.title(),
+			this.shineSignUserService.getUserFromToken(token)
+		);
 		this.documentRepository.save(document);
 		return DocumentResponse.fromDocument(document);
 	}
@@ -56,6 +57,13 @@ public class DocumentService {
 	public DocumentResponse getDocument (String token, UUID documentId) {
 		Document document = this.getDocumentFromId(documentId);
 		this.checkDocumentOwner(token, document.getId());
+		return DocumentResponse.fromDocument(document);
+	}
+
+	public DocumentResponse getDocumentToFillOut (UUID documentId) {
+		Document document = this.getDocumentFromId(documentId);
+		if (!document.getIsPublic())
+			throw new IllegalArgumentException("Document not found");
 		return DocumentResponse.fromDocument(document);
 	}
 

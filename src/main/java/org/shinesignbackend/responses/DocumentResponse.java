@@ -11,14 +11,16 @@ import java.util.UUID;
 public record DocumentResponse(
 	UUID id,
 	String title,
-	List<Page> pages
+	List<Page> pages,
+	Boolean isPublic
 ) {
 	@Contract ("_ -> new")
 	public static @NotNull DocumentResponse fromDocument (@NotNull Document document) {
 		return new DocumentResponse(
 			document.getId(),
 			document.getTitle(),
-			document.getPages()
+			document.getPages(),
+			document.getIsPublic()
 		);
 	}
 }
