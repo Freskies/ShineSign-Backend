@@ -5,13 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.shinesignbackend.entities.Document;
 import org.shinesignbackend.entities.Page;
+import org.shinesignbackend.entities.UploadedImage;
 import org.shinesignbackend.factories.DocumentFactory;
 import org.shinesignbackend.factories.PageFactory;
+import org.shinesignbackend.factories.UploadedImageFactory;
 import org.shinesignbackend.repositories.DocumentRepository;
+import org.shinesignbackend.repositories.UploadedImageRepository;
 import org.shinesignbackend.requests.CreateDocumentRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
 import org.shinesignbackend.responses.AllDocumentsResponse;
 import org.shinesignbackend.responses.DocumentResponse;
+import org.shinesignbackend.responses.ImagesResponse;
 import org.shinesignbackend.responses.PageResponse;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,9 @@ import java.util.UUID;
 public class DocumentService {
 	private final ShineSignUserService shineSignUserService;
 	private final DocumentRepository documentRepository;
+	private final UploadedImageRepository uploadedImageRepository;
+
+	// HELPER METHODS
 
 	private @NotNull Document getDocumentFromId (UUID documentId) {
 		return this.documentRepository.findById(documentId).orElseThrow(
@@ -36,6 +43,8 @@ public class DocumentService {
 			throw new IllegalArgumentException("Document not found");
 	}
 
+	// PAGES METHODS
+
 	public PageResponse createPage (String token, UUID documentId) {
 		Document document = this.getDocumentFromId(documentId);
 		this.checkDocumentOwner(token, documentId);
@@ -44,6 +53,36 @@ public class DocumentService {
 		Document newDocument = this.documentRepository.save(document);
 		return PageResponse.fromPage(newDocument.getPages().get(document.getPages().size() - 1));
 	}
+
+	// IMAGES METHODS
+
+	public void uploadImage (String token, UUID documentId, String url) {
+		Document document = this.getDocumentFromId(documentId);
+		this.checkDocumentOwner(token, documentId);
+		UploadedImage uploadedImage = UploadedImageFactory.createUploadedImage(url);
+		document.getImages().add(this.uploadedImageRepository.save(uploadedImage));
+		this.documentRepository.save(document);
+	}
+
+	public ImagesResponse getImages (String token, UUID documentId) {
+		Document document = this.getDocumentFromId(documentId);
+		this.checkDocumentOwner(token, documentId);
+		List<UploadedImage> images = document.getImages();
+		return ImagesResponse.fromUploadedImage(images);
+	}
+
+	public void deleteImage (String token, UUID documentId, UUID imageId) {
+		Document document = this.getDocumentFromId(documentId);
+		this.checkDocumentOwner(token, documentId);
+		UploadedImage image = document.getImages().stream()
+			.filter(i -> i.getId().equals(imageId)).findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("Image not found"));
+		document.getImages().remove(image);
+		this.documentRepository.save(document);
+		this.uploadedImageRepository.delete(image);
+	}
+
+	// DOCUMENT METHODS
 
 	public DocumentResponse createDocument (String token, @NotNull CreateDocumentRequest createDocumentRequest) {
 		Document document = DocumentFactory.createDocument(

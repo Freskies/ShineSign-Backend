@@ -10,24 +10,19 @@ import org.hibernate.type.SqlTypes;
 import java.util.UUID;
 
 @Entity
-@Table (name = "pages")
+@Table (name = "signed_documents")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Page {
+public class SignedDocument {
 	@Id
 	@GeneratedValue (strategy = GenerationType.UUID)
 	@Column (nullable = false)
 	@JdbcTypeCode (SqlTypes.UUID)
 	private UUID id;
 
-	private Boolean isFirst;
+	@Column (nullable = false)
+	private String url;
 
-	private UUID nextPage;
-
-	@Column (length = 65535)
-	private String style;
-
-	@Column (length = 65535)
-	private String body;
+	private String email;
 }

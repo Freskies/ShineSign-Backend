@@ -10,24 +10,19 @@ import org.hibernate.type.SqlTypes;
 import java.util.UUID;
 
 @Entity
-@Table (name = "pages")
+@Table (name = "uploaded_images")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Page {
+public class UploadedImage {
 	@Id
 	@GeneratedValue (strategy = GenerationType.UUID)
 	@Column (nullable = false)
 	@JdbcTypeCode (SqlTypes.UUID)
 	private UUID id;
 
-	private Boolean isFirst;
+	@Column (nullable = false)
+	private String name;
 
-	private UUID nextPage;
-
-	@Column (length = 65535)
-	private String style;
-
-	@Column (length = 65535)
-	private String body;
+	private String url;
 }

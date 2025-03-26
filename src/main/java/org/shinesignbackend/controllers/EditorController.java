@@ -59,23 +59,33 @@ public class EditorController {
 		return this.documentService.updateDocument(token, documentId, updateDocumentRequest);
 	}
 
-//	@PostMapping(value = "/ciola", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//	public void uploadFile (
-//		@RequestHeader ("Authorization") String token,
-//		@RequestPart ("file") MultipartFile file
-//	) {
-//		try { var result = this.cloudinary.uploader().upload(
-//			file.getBytes(), Cloudinary.asMap(
-//				"folder",
-//				"ShineSignImages",
-//				"public_id",
-//				file.getOriginalFilename()
-//			)
-//		);
-//			String url = result.get("secure_url").toString();
-//			return this.customerService.updateAvatar(id, url);
-//		} catch (Exception e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
+	@PostMapping (value = "/{documentId}/newImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public void uploadImage (
+		@RequestHeader ("Authorization") String token,
+		@PathVariable UUID documentId,
+		@RequestPart ("file") MultipartFile file
+	) {
+		try {
+			var result = this.cloudinary.uploader().upload(
+				file.getBytes(), Cloudinary.asMap(
+					"folder",
+					"ShineSignImages",
+					"public_id",
+					file.getOriginalFilename()
+				)
+			);
+			String url = result.get("secure_url").toString();
+			this.documentService.uploadImage(token, documentId ,url);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GetMapping (value = "/{documentId}/allImages")
+	public void getAllImages (
+		@RequestHeader ("Authorization") String token,
+		@PathVariable UUID documentId
+	) {
+		this.documentService.getAllImages(token, documentId);
+	}
 }

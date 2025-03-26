@@ -29,6 +29,12 @@ public class Document {
 	@OneToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private List<Page> pages;
 
+	@OneToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<UploadedImage> images;
+
+	@OneToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private List<SignedDocument> signedDocuments;
+
 	@ManyToOne
 	private ShineSignUser owner;
 }
