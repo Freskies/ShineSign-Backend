@@ -21,8 +21,5 @@ public class UploadedImage {
 	@JdbcTypeCode (SqlTypes.UUID)
 	private UUID id;
 
-	@Column (nullable = false)
-	private String name;
-
 	private String url;
 }

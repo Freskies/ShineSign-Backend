@@ -13,10 +13,7 @@ import org.shinesignbackend.repositories.DocumentRepository;
 import org.shinesignbackend.repositories.UploadedImageRepository;
 import org.shinesignbackend.requests.CreateDocumentRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
-import org.shinesignbackend.responses.AllDocumentsResponse;
-import org.shinesignbackend.responses.DocumentResponse;
-import org.shinesignbackend.responses.ImagesResponse;
-import org.shinesignbackend.responses.PageResponse;
+import org.shinesignbackend.responses.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,15 +53,16 @@ public class DocumentService {
 
 	// IMAGES METHODS
 
-	public void uploadImage (String token, UUID documentId, String url) {
+	public ImageResponse uploadImage (String token, UUID documentId, String url) {
 		Document document = this.getDocumentFromId(documentId);
 		this.checkDocumentOwner(token, documentId);
 		UploadedImage uploadedImage = UploadedImageFactory.createUploadedImage(url);
 		document.getImages().add(this.uploadedImageRepository.save(uploadedImage));
 		this.documentRepository.save(document);
+		return ImageResponse.fromUploadedImage(uploadedImage);
 	}
 
-	public ImagesResponse getImages (String token, UUID documentId) {
+	public ImagesResponse getAllImages (String token, UUID documentId) {
 		Document document = this.getDocumentFromId(documentId);
 		this.checkDocumentOwner(token, documentId);
 		List<UploadedImage> images = document.getImages();

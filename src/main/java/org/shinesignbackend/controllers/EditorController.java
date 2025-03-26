@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.shinesignbackend.requests.CreateDocumentRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
 import org.shinesignbackend.responses.DocumentResponse;
+import org.shinesignbackend.responses.ImageResponse;
+import org.shinesignbackend.responses.ImagesResponse;
 import org.shinesignbackend.responses.PageResponse;
 import org.shinesignbackend.services.DocumentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -60,7 +63,8 @@ public class EditorController {
 	}
 
 	@PostMapping (value = "/{documentId}/newImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public void uploadImage (
+	@ResponseStatus (HttpStatus.CREATED)
+	public ImageResponse uploadImage (
 		@RequestHeader ("Authorization") String token,
 		@PathVariable UUID documentId,
 		@RequestPart ("file") MultipartFile file
@@ -75,17 +79,26 @@ public class EditorController {
 				)
 			);
 			String url = result.get("secure_url").toString();
-			this.documentService.uploadImage(token, documentId ,url);
+			return this.documentService.uploadImage(token, documentId ,url);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@GetMapping (value = "/{documentId}/allImages")
-	public void getAllImages (
+	public ImagesResponse getAllImages (
 		@RequestHeader ("Authorization") String token,
 		@PathVariable UUID documentId
 	) {
-		this.documentService.getAllImages(token, documentId);
+		return this.documentService.getAllImages(token, documentId);
+	}
+
+	@DeleteMapping ("/{documentId}/deleteImage/{imageId}")
+	public void deleteImage (
+		@RequestHeader ("Authorization") String token,
+		@PathVariable UUID documentId,
+		@PathVariable UUID imageId
+	) {
+		this.documentService.deleteImage(token, documentId, imageId);
 	}
 }
