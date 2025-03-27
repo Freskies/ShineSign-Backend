@@ -6,6 +6,7 @@ import java.util.List;
 
 public record UpdateDocumentRequest(
 	String title,
+	Boolean isPublic,
 	List<Page> pages
 ) {
 }

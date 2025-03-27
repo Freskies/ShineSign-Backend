@@ -63,15 +63,6 @@ public class EditorController {
 		return this.documentService.updateDocument(token, documentId, updateDocumentRequest);
 	}
 
-	@PutMapping ("/{documentId}/setVisibility")
-	public void setVisibility (
-		@RequestHeader ("Authorization") String token,
-		@PathVariable UUID documentId,
-		@RequestBody @Valid @NotNull SetVisibilityRequest setVisibilityRequest
-	) {
-		this.documentService.setVisibility(token, documentId, setVisibilityRequest);
-	}
-
 	@PostMapping (value = "/{documentId}/newImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseStatus (HttpStatus.CREATED)
 	public ImageResponse uploadImage (

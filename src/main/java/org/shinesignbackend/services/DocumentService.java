@@ -110,15 +110,10 @@ public class DocumentService {
 			document.setTitle(updateDocumentRequest.title());
 		if (updateDocumentRequest.pages() != null)
 			document.setPages(updateDocumentRequest.pages());
+		if (updateDocumentRequest.isPublic() != null)
+			document.setIsPublic(updateDocumentRequest.isPublic());
 		this.documentRepository.save(document);
 		return DocumentResponse.fromDocument(document);
-	}
-
-	public void setVisibility (String token, UUID documentId, @NotNull SetVisibilityRequest setVisibilityRequest) {
-		Document document = this.getDocumentFromId(documentId);
-		this.checkDocumentOwner(token, document.getId());
-		document.setIsPublic(setVisibilityRequest.visibility());
-		this.documentRepository.save(document);
 	}
 
 	public AllDocumentsResponse getAllDocuments (String token) {
