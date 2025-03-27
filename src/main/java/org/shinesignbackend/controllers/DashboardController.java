@@ -1,5 +1,6 @@
 package org.shinesignbackend.controllers;
 
+import com.cloudinary.Cloudinary;
 import lombok.RequiredArgsConstructor;
 import org.shinesignbackend.responses.AllDocumentsResponse;
 import org.shinesignbackend.services.DocumentService;

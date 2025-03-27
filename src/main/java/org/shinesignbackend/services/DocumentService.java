@@ -8,6 +8,7 @@ import org.shinesignbackend.entities.Page;
 import org.shinesignbackend.entities.UploadedImage;
 import org.shinesignbackend.factories.DocumentFactory;
 import org.shinesignbackend.factories.PageFactory;
+import org.shinesignbackend.factories.SignedDocumentFactory;
 import org.shinesignbackend.factories.UploadedImageFactory;
 import org.shinesignbackend.repositories.DocumentRepository;
 import org.shinesignbackend.repositories.UploadedImageRepository;
@@ -123,5 +124,11 @@ public class DocumentService {
 		return new AllDocumentsResponse(
 			this.documentRepository.findAllByOwner(this.shineSignUserService.getUserFromToken(token))
 		);
+	}
+
+	public void fillOutDocument (UUID documentId, String email, String url) {
+		Document document = this.getDocumentFromId(documentId);
+		document.getSignedDocuments().add(SignedDocumentFactory.createSignedDocument(email, url));
+		this.documentRepository.save(document);
 	}
 }
