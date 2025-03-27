@@ -7,8 +7,8 @@ public class PageFactory {
 	public static @NotNull Page createFirstPage() {
 		Page page = new Page();
 		page.setIsFirst(true);
-		page.setBody("<!-- Start editing here -->");
-		page.setStyle("/* Write your style rules here */");
+		page.setBody("<title>My document</title>");
+		page.setStyle("");
 		page.setNextPage(null);
 		return page;
 	}
@@ -16,8 +16,8 @@ public class PageFactory {
 	public static @NotNull Page createPage() {
 		Page page = new Page();
 		page.setIsFirst(false);
-		page.setBody("<!-- Start editing here -->");
-		page.setStyle("/* Write your style rules here */");
+		page.setBody("<title>My document</title>");
+		page.setStyle("");
 		page.setNextPage(null);
 		return page;
 	}

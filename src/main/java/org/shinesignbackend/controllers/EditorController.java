@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.shinesignbackend.requests.CreateDocumentRequest;
+import org.shinesignbackend.requests.SetVisibilityRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
 import org.shinesignbackend.responses.DocumentResponse;
 import org.shinesignbackend.responses.ImageResponse;
@@ -60,6 +61,15 @@ public class EditorController {
 		@RequestBody @Valid @NotNull UpdateDocumentRequest updateDocumentRequest
 	) {
 		return this.documentService.updateDocument(token, documentId, updateDocumentRequest);
+	}
+
+	@PutMapping ("/{documentId}/setVisibility")
+	public void setVisibility (
+		@RequestHeader ("Authorization") String token,
+		@PathVariable UUID documentId,
+		@RequestBody @Valid @NotNull SetVisibilityRequest setVisibilityRequest
+	) {
+		this.documentService.setVisibility(token, documentId, setVisibilityRequest);
 	}
 
 	@PostMapping (value = "/{documentId}/newImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

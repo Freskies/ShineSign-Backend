@@ -14,7 +14,7 @@ public class DocumentFactory {
 		Document document = new Document();
 		document.setTitle(title);
 		document.setOwner(owner);
-		document.setIsPublic(true); // TODO change this to false
+		document.setIsPublic(false);
 		document.setPages(List.of(PageFactory.createFirstPage()));
 		document.setImages(new ArrayList<>() {});
 		document.setSignedDocuments(new ArrayList<>() {});

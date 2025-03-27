@@ -13,6 +13,7 @@ import org.shinesignbackend.factories.UploadedImageFactory;
 import org.shinesignbackend.repositories.DocumentRepository;
 import org.shinesignbackend.repositories.UploadedImageRepository;
 import org.shinesignbackend.requests.CreateDocumentRequest;
+import org.shinesignbackend.requests.SetVisibilityRequest;
 import org.shinesignbackend.requests.UpdateDocumentRequest;
 import org.shinesignbackend.responses.*;
 import org.springframework.stereotype.Service;
@@ -98,13 +99,6 @@ public class DocumentService {
 		return DocumentResponse.fromDocument(document);
 	}
 
-	public DocumentResponse getDocumentToFillOut (UUID documentId) {
-		Document document = this.getDocumentFromId(documentId);
-		if (!document.getIsPublic())
-			throw new IllegalArgumentException("Document not found");
-		return DocumentResponse.fromDocument(document);
-	}
-
 	public DocumentResponse updateDocument (
 		String token,
 		UUID documentId,
@@ -120,10 +114,26 @@ public class DocumentService {
 		return DocumentResponse.fromDocument(document);
 	}
 
+	public void setVisibility (String token, UUID documentId, @NotNull SetVisibilityRequest setVisibilityRequest) {
+		Document document = this.getDocumentFromId(documentId);
+		this.checkDocumentOwner(token, document.getId());
+		document.setIsPublic(setVisibilityRequest.visibility());
+		this.documentRepository.save(document);
+	}
+
 	public AllDocumentsResponse getAllDocuments (String token) {
 		return new AllDocumentsResponse(
 			this.documentRepository.findAllByOwner(this.shineSignUserService.getUserFromToken(token))
 		);
+	}
+
+	// FILL-OUT METHODS
+
+	public DocumentResponse getDocumentToFillOut (UUID documentId) {
+		Document document = this.getDocumentFromId(documentId);
+		if (!document.getIsPublic())
+			throw new IllegalArgumentException("Document not found");
+		return DocumentResponse.fromDocument(document);
 	}
 
 	public void fillOutDocument (UUID documentId, String email, String url) {
