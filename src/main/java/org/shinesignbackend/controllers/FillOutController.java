@@ -32,7 +32,7 @@ public class FillOutController {
 	public void fillOutDocument (
 		@PathVariable UUID documentId,
 		@PathVariable String email,
-		@RequestPart ("file") MultipartFile file
+		@RequestPart ("pdf") MultipartFile file
 	) {
 		try {
 			var result = this.cloudinary.uploader().upload(
