@@ -136,4 +136,10 @@ public class DocumentService {
 		document.getSignedDocuments().add(SignedDocumentFactory.createSignedDocument(email, url));
 		this.documentRepository.save(document);
 	}
+
+	public AllSignedDocumentResponse getAllSignedDocuments (String token, UUID documentId) {
+		Document document = this.getDocumentFromId(documentId);
+		this.checkDocumentOwner(token, documentId);
+		return AllSignedDocumentResponse.fromSignedDocuments(document.getSignedDocuments());
+	}
 }
